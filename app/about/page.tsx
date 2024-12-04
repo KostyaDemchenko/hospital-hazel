@@ -70,6 +70,61 @@ export default function AboutUs() {
                                     lorem ipsum
                                 </p>
                             </div>
+                            <div className="relative aspect-square overflow-hidden rounded-lg">
+                                <Image
+                                    src="/aboutus/02.png"
+                                    alt="Center activity" 
+                                    className="object-cover"
+                                    fill
+                                />
+                                <p className="absolute bottom-2 left-1/2 -translate-x-1/2 text-sm text-center bg-black/60 text-white px-2 py-1 rounded">
+                                    lorem ipsum
+                                </p>
+                            </div>
+                            <div className="relative aspect-square overflow-hidden rounded-lg">
+                                <Image
+                                    src="/aboutus/03.png"
+                                    alt="Center activity" 
+                                    className="object-cover"
+                                    fill
+                                />
+                                <p className="absolute bottom-2 left-1/2 -translate-x-1/2 text-sm text-center bg-black/60 text-white px-2 py-1 rounded">
+                                    lorem ipsum
+                                </p>
+                            </div>
+                            <div className="relative aspect-square overflow-hidden rounded-lg">
+                                <Image
+                                    src="/aboutus/04.png"
+                                    alt="Center activity" 
+                                    className="object-cover"
+                                    fill
+                                />
+                                <p className="absolute bottom-2 left-1/2 -translate-x-1/2 text-sm text-center bg-black/60 text-white px-2 py-1 rounded">
+                                    lorem ipsum
+                                </p>
+                            </div>
+                            <div className="relative aspect-square overflow-hidden rounded-lg">
+                                <Image
+                                    src="/aboutus/05.png"
+                                    alt="Center activity" 
+                                    className="object-cover"
+                                    fill
+                                />
+                                <p className="absolute bottom-2 left-1/2 -translate-x-1/2 text-sm text-center bg-black/60 text-white px-2 py-1 rounded">
+                                    lorem ipsum
+                                </p>
+                            </div>
+                            <div className="relative aspect-square overflow-hidden rounded-lg">
+                                <Image
+                                    src="/aboutus/06.png"
+                                    alt="Center activity" 
+                                    className="object-cover"
+                                    fill
+                                />
+                                <p className="absolute bottom-2 left-1/2 -translate-x-1/2 text-sm text-center bg-black/60 text-white px-2 py-1 rounded">
+                                    lorem ipsum
+                                </p>
+                            </div>
                     </div>
                 </div>
             </div>

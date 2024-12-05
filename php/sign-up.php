@@ -17,6 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $phone = trim($_POST['phone']);
     $password = $_POST['password'];
     $role = 'user'; // Default role
+    $user_photo = isset($_POST['user_photo']) && !empty($_POST['user_photo']) ? trim($_POST['user_photo']) : null;
 
     // Проверка имени пользователя
     if (empty($username)) {
@@ -73,8 +74,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
     // Вставка данных в базу
-    $stmt = $mysqli->prepare("INSERT INTO users (username, email, phone, password, role) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssss", $username, $email, $phone, $hashed_password, $role);
+    $stmt = $mysqli->prepare("INSERT INTO users (username, email, phone, password, role, user_photo) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssss", $username, $email, $phone, $hashed_password, $role, $user_photo);
 
     if ($stmt->execute()) {
         $_SESSION['user_id'] = $stmt->insert_id;

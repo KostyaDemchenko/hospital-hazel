@@ -48,65 +48,63 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="container mx-auto px-4 py-8">
-        <Card className="bg-[#FFF5EE] mb-8">
-          <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="relative w-32 h-32 rounded-full overflow-hidden">
-                <Image
-                  src="/placeholder.svg"
-                  alt="Profile picture"
-                  fill
-                  className="object-cover"
+    <div className='min-h-screen flex flex-col'>
+      <div className='container mx-auto px-4 py-8'>
+        <Card className='bg-[#FFF5EE] mb-8'>
+          <CardContent className='p-6'>
+            <div className='flex flex-col md:flex-row items-center gap-6'>
+              <div className='relative w-32 h-32 rounded-full overflow-hidden'>
+                <img
+                  src={user.user_photo}
+                  alt='Profile picture'
+                  className='object-cover w-full h-full'
                 />
               </div>
-              <div className="space-y-2 flex-1">
-                <div className="flex items-center gap-2">
-                  <User className="h-5 w-5" />
-                  <span className="text-xl font-semibold">{user.username}</span>
+              <div className='space-y-2 flex-1'>
+                <div className='flex items-center gap-2'>
+                  <User className='h-5 w-5' />
+                  <span className='text-xl font-semibold'>{user.username}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Mail className="h-5 w-5" />
+                <div className='flex items-center gap-2'>
+                  <Mail className='h-5 w-5' />
                   <span>{user.email}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Phone className="h-5 w-5" />
+                <div className='flex items-center gap-2'>
+                  <Phone className='h-5 w-5' />
                   <span>{user.phone}</span>
                 </div>
               </div>
               <Button
                 onClick={handleLogout}
-                className="bg-red-500 hover:bg-red-600 text-white flex items-center gap-2"
+                className='bg-red-500 hover:bg-red-600 text-white flex items-center gap-2'
               >
-                <LogOut className="h-5 w-5" />
+                <LogOut className='h-5 w-5' />
                 Log out
               </Button>
             </div>
           </CardContent>
         </Card>
-
-        <h2 className="text-2xl font-bold mb-6 mt-6">Your appointments</h2>
-        <div className="space-y-4">
+        <h2 className='text-2xl font-bold mb-6 mt-6'>Your appointments</h2>
+        <div className='space-y-4'>
           {appointments.map((appointment, index) => (
-            <Card key={index} className="bg-[#FFF5EE]">
-              <CardContent className="p-6 flex justify-between items-center">
-                <div className="flex items-center gap-4">
-                  <div className="p-2 bg-white rounded-full">
-                    <User className="h-6 w-6" />
+            <Card key={index} className='bg-[#FFF5EE]'>
+              <CardContent className='p-6 flex justify-between items-center'>
+                <div className='flex items-center gap-4'>
+                  <div className='p-2 bg-white rounded-full'>
+                    <User className='h-6 w-6' />
                   </div>
                   <div>
-                    <h3 className="font-semibold">{appointment.title}</h3>
-                    <p className="text-gray-600">{appointment.type}</p>
+                    <h3 className='font-semibold'>{appointment.title}</h3>
+                    <p className='text-gray-600'>{appointment.type}</p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="font-semibold">
+                <div className='text-right'>
+                  <p className='font-semibold'>
                     {new Date(
                       appointment.appointment_date
                     ).toLocaleDateString()}
                   </p>
-                  <p className="text-gray-600">
+                  <p className='text-gray-600'>
                     {new Date(
                       appointment.appointment_date
                     ).toLocaleTimeString()}

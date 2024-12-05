@@ -1,4 +1,3 @@
-// page.tsx
 "use client";
 
 import { useState } from "react";
@@ -14,6 +13,7 @@ export default function SignUp() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [userPhoto, setUserPhoto] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const router = useRouter();
 
@@ -26,12 +26,19 @@ export default function SignUp() {
 
     setErrors({});
 
+    // Отправляем null, если userPhoto пустое
     const response = await fetch("http://localhost:8080/sign-up.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: new URLSearchParams({ username, email, phone, password }),
+      body: new URLSearchParams({
+        username,
+        email,
+        phone,
+        password,
+        user_photo: userPhoto || "", // Если поле пустое, отправляем пустую строку
+      }),
       credentials: "include",
     });
 
@@ -46,84 +53,92 @@ export default function SignUp() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FFF5EE] p-4">
-      <Card className="w-full max-w-md">
-        <CardContent className="p-6">
-          <h1 className="text-2xl font-bold text-center mb-6">Sign Up</h1>
-          <form className="space-y-4" onSubmit={handleSubmit}>
+    <div className='min-h-screen flex items-center justify-center bg-[#FFF5EE] p-4'>
+      <Card className='w-full max-w-md'>
+        <CardContent className='p-6'>
+          <h1 className='text-2xl font-bold text-center mb-6'>Sign Up</h1>
+          <form className='space-y-4' onSubmit={handleSubmit}>
             <div>
               <Input
-                type="text"
-                placeholder="Your Name Surname"
+                type='text'
+                placeholder='Your Name Surname'
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
               {errors.username && (
-                <p className="text-red-500 text-sm justify-center mt-1">
+                <p className='text-red-500 text-sm justify-center mt-1'>
                   {errors.username}
                 </p>
               )}
             </div>
             <div>
               <Input
-                type="email"
-                placeholder="Your Email"
+                type='email'
+                placeholder='Your Email'
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
               {errors.email && (
-                <p className="text-red-500 text-sm justify-center mt-1">
+                <p className='text-red-500 text-sm justify-center mt-1'>
                   {errors.email}
                 </p>
               )}
             </div>
             <div>
               <Input
-                type="text"
-                placeholder="Your Phone Number"
+                type='text'
+                placeholder='Your Phone Number'
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
               />
               {errors.phone && (
-                <p className="text-red-500 text-sm justify-center mt-1">
+                <p className='text-red-500 text-sm justify-center mt-1'>
                   {errors.phone}
                 </p>
               )}
             </div>
             <div>
               <Input
-                type="password"
-                placeholder="Your Password"
+                type='password'
+                placeholder='Your Password'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
               {errors.password && (
-                <p className="text-red-500 text-sm justify-center mt-1">
+                <p className='text-red-500 text-sm justify-center mt-1'>
                   {errors.password}
                 </p>
               )}
             </div>
             <div>
               <Input
-                type="password"
-                placeholder="Confirm Password"
+                type='password'
+                placeholder='Confirm Password'
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
               {errors.confirmPassword && (
-                <p className="text-red-500 text-sm justify-center mt-1">
+                <p className='text-red-500 text-sm justify-center mt-1'>
                   {errors.confirmPassword}
                 </p>
               )}
             </div>
-            <Button className="w-full bg-pink-200 hover:bg-pink-300 text-black">
-              Register
-            </Button>
+            <div>
+              <Input
+                type='text'
+                placeholder='Profile Image URL (optional)'
+                value={userPhoto}
+                onChange={(e) => setUserPhoto(e.target.value)}
+              />
+            </div>
+            <div className='flex justify-center mt-4'>
+              <Button type='submit'>Sign Up</Button>
+            </div>
           </form>
-          <p className="text-center mt-4 text-sm">
+          <p className='text-sm mt-4 text-center'>
             Already have an account?{" "}
-            <Link href="/sign-in" className="text-blue-600 hover:underline">
-              Sign in
+            <Link href='/login' className='text-blue-500'>
+              Login
             </Link>
           </p>
         </CardContent>

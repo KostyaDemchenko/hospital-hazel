@@ -11,29 +11,33 @@ include 'db.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $errors = [];
 
-    $username = trim($_POST['username']);
+    // Получение и очистка данных
+    $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    if (empty($username) || empty($password)) {
+    // Проверка наличия email и пароля
+    if (empty($email) || empty($password)) {
         http_response_code(400);
-        echo json_encode(["error" => "Username and password are required"]);
+        echo json_encode(["error" => "Email and password are required"]);
         exit();
     }
 
-    $stmt = $mysqli->prepare("SELECT id, password, role FROM users WHERE username = ?");
+    // Подготовка запроса для поиска пользователя по email
+    $stmt = $mysqli->prepare("SELECT id, password, role FROM users WHERE email = ?");
     if ($stmt === false) {
         http_response_code(500);
         echo json_encode(["error" => "Database query preparation failed"]);
         exit();
     }
 
-    $stmt->bind_param("s", $username);
+    $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->store_result();
 
+    // Проверка наличия пользователя
     if ($stmt->num_rows === 0) {
         http_response_code(401);
-        $errors['username'] = "User not found";
+        $errors['email'] = "User not found";
         echo json_encode(["errors" => $errors]);
         $stmt->close();
         exit();
@@ -42,6 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_result($id, $hashed_password, $role);
     $stmt->fetch();
 
+    // Проверка пароля
     if (password_verify($password, $hashed_password)) {
         $_SESSION['user_id'] = $id;
         $_SESSION['role'] = $role;

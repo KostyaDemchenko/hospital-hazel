@@ -45,9 +45,7 @@ export default function Home() {
       {/* Services Section */}
       <section className='py-16 bg-white'>
         <div className='container mx-auto px-4'>
-          <h2 className='text-3xl font-bold text-center mb-12'>
-            Our Services 123
-          </h2>
+          <h2 className='text-3xl font-bold text-center mb-12'>Our Services</h2>
           <div className='grid md:grid-cols-3 gap-8'>
             <Card className='bg-[#FFE4D6]'>
               <CardContent className='p-6'>
@@ -69,26 +67,6 @@ export default function Home() {
                 <p>Physical activities and sports training</p>
               </CardContent>
             </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className='py-16 bg-gray-50'>
-        <div className='container mx-auto px-4'>
-          <div className='grid md:grid-cols-3 gap-8 text-center'>
-            <div>
-              <h3 className='text-3xl font-bold mb-2'>1,000+</h3>
-              <p className='text-gray-600'>Lives Transformed</p>
-            </div>
-            <div>
-              <h3 className='text-3xl font-bold mb-2'>95%</h3>
-              <p className='text-gray-600'>Client Satisfaction</p>
-            </div>
-            <div>
-              <h3 className='text-3xl font-bold mb-2'>Top 10</h3>
-              <p className='text-gray-600'>Mental Health Center</p>
-            </div>
           </div>
         </div>
       </section>
@@ -124,10 +102,10 @@ export default function Home() {
               },
             ].map((event) => (
               <Card key={event.title}>
-                <CardContent className='flex items-center justify-between p-6'>
+                <CardContent className='flex items-center justify-between p-2'>
                   <div className='flex items-center gap-4'>
-                    <div className='h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center'>
-                      <CalendarDays className='h-6 w-6 text-primary' />
+                    <div className='h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center hidden md:block transition-opacity duration-300 ease-in-ou'>
+                      <CalendarDays className='h-6 w-6 text-primary hidden md:block transition-opacity duration-300 ease-in-out' />
                     </div>
                     <div>
                       <h3 className='font-semibold'>{event.title}</h3>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { User, Phone, Mail, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -16,11 +15,25 @@ function Spinner() {
   );
 }
 
+interface Appointment {
+  title: string;
+  type: string;
+  appointment_date: string;
+}
+
+interface UserProfile {
+  username: string;
+  email: string;
+  phone: string;
+  user_photo: string | null;
+  appointments: Appointment[];
+}
+
 export default function Profile() {
-  const [user, setUser] = useState(null);
-  const [appointments, setAppointments] = useState([]);
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [isLoading, setIsLoading] = useState(true); // Состояние загрузки
-  const [error, setError] = useState(null); // Состояние ошибки
+  const [error, setError] = useState<string | null>(null); // Состояние ошибки
   const router = useRouter();
 
   useEffect(() => {
@@ -39,11 +52,12 @@ export default function Profile() {
           setAppointments(data.appointments);
         } else if (response.status === 401) {
           router.push("/sign-in");
+          return; // Прекращаем выполнение после перенаправления
         } else {
-          const errorData = await response.text();
-          throw new Error(errorData || "Не удалось загрузить профиль.");
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Не удалось загрузить профиль.");
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error("Error fetching profile:", err);
         setError("Не удалось загрузить профиль. Пожалуйста, попробуйте позже.");
       } finally {
@@ -67,10 +81,10 @@ export default function Profile() {
       if (response.ok) {
         router.push("/sign-in");
       } else {
-        const errorData = await response.text();
-        throw new Error(errorData || "Не удалось выйти из системы.");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Не удалось выйти из системы.");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error during logout:", err);
       setError("Не удалось выйти из системы. Пожалуйста, попробуйте позже.");
     } finally {
@@ -88,6 +102,11 @@ export default function Profile() {
     return <Spinner />;
   }
 
+  if (!user) {
+    // Если пользователь не авторизован и уже произошло перенаправление, ничего не рендерим
+    return null;
+  }
+
   return (
     <div className='min-h-screen flex flex-col'>
       <div className='container mx-auto px-4 py-8'>
@@ -100,19 +119,17 @@ export default function Profile() {
           <CardContent className='p-6'>
             <div className='flex flex-col md:flex-row items-center gap-6'>
               <div className='relative w-32 h-32 rounded-full overflow-hidden'>
-                {/* Используем условный URL для изображения профиля */}
-                <img
-                  src={profilePhoto}
-                  alt='Profile picture'
-                  className='object-cover w-full h-full'
-                />
-                {/* Если вы предпочитаете использовать компонент Image от Next.js:
-                <Image
-                  src={profilePhoto}
-                  alt="Profile picture"
-                  layout="fill"
-                  objectFit="cover"
-                /> */}
+                {profilePhoto ? (
+                  <img
+                    src={profilePhoto}
+                    alt='Profile picture'
+                    className='object-cover w-full h-full'
+                  />
+                ) : (
+                  <div className='flex items-center justify-center bg-gray-200 w-full h-full'>
+                    <User className='h-16 w-16 text-gray-400' />
+                  </div>
+                )}
               </div>
               <div className='space-y-2 flex-1'>
                 <div className='flex items-center gap-2'>

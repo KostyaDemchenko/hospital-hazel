@@ -47,6 +47,12 @@ export default function Profile() {
     return <div>Loading...</div>;
   }
 
+  // Определяем URL фотографии профиля, используя дефолтное изображение при необходимости
+  const profilePhoto =
+    user.user_photo && user.user_photo.trim() !== ""
+      ? user.user_photo
+      : "/profile-def.png";
+
   return (
     <div className='min-h-screen flex flex-col'>
       <div className='container mx-auto px-4 py-8'>
@@ -54,11 +60,19 @@ export default function Profile() {
           <CardContent className='p-6'>
             <div className='flex flex-col md:flex-row items-center gap-6'>
               <div className='relative w-32 h-32 rounded-full overflow-hidden'>
+                {/* Используем условный URL для изображения профиля */}
                 <img
-                  src={user.user_photo}
+                  src={profilePhoto}
                   alt='Profile picture'
                   className='object-cover w-full h-full'
                 />
+                {/* Если вы предпочитаете использовать компонент Image от Next.js:
+                <Image
+                  src={profilePhoto}
+                  alt='Profile picture'
+                  layout="fill"
+                  objectFit="cover"
+                /> */}
               </div>
               <div className='space-y-2 flex-1'>
                 <div className='flex items-center gap-2'>

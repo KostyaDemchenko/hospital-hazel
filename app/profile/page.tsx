@@ -7,24 +7,47 @@ import { User, Phone, Mail, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
+// Спиннер компонент
+function Spinner() {
+  return (
+    <div className='flex justify-center items-center min-h-screen'>
+      <div className='w-16 h-16 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin'></div>
+    </div>
+  );
+}
+
 export default function Profile() {
   const [user, setUser] = useState(null);
   const [appointments, setAppointments] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // Состояние загрузки
+  const [error, setError] = useState(null); // Состояние ошибки
   const router = useRouter();
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const response = await fetch("http://localhost:8080/profile.php", {
-        credentials: "include",
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data);
-        setAppointments(data.appointments);
-      } else if (response.status === 401) {
-        router.push("/sign-in");
-      } else {
-        alert("Failed to fetch profile");
+      setIsLoading(true); // Начало загрузки
+      setError(null); // Сброс ошибки
+
+      try {
+        const response = await fetch("http://localhost:8080/profile.php", {
+          credentials: "include",
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data);
+          setAppointments(data.appointments);
+        } else if (response.status === 401) {
+          router.push("/sign-in");
+        } else {
+          const errorData = await response.text();
+          throw new Error(errorData || "Не удалось загрузить профиль.");
+        }
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+        setError("Не удалось загрузить профиль. Пожалуйста, попробуйте позже.");
+      } finally {
+        setIsLoading(false); // Завершение загрузки
       }
     };
 
@@ -32,30 +55,47 @@ export default function Profile() {
   }, [router]);
 
   const handleLogout = async () => {
-    const response = await fetch("http://localhost:8080/logout.php", {
-      method: "POST",
-      credentials: "include",
-    });
-    if (response.ok) {
-      router.push("/sign-in");
-    } else {
-      alert("Logout failed");
+    setIsLoading(true); // Начало загрузки при выходе
+    setError(null); // Сброс ошибки
+
+    try {
+      const response = await fetch("http://localhost:8080/logout.php", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        router.push("/sign-in");
+      } else {
+        const errorData = await response.text();
+        throw new Error(errorData || "Не удалось выйти из системы.");
+      }
+    } catch (err) {
+      console.error("Error during logout:", err);
+      setError("Не удалось выйти из системы. Пожалуйста, попробуйте позже.");
+    } finally {
+      setIsLoading(false); // Завершение загрузки
     }
   };
 
-  if (!user) {
-    return <div>Loading...</div>;
-  }
-
   // Определяем URL фотографии профиля, используя дефолтное изображение при необходимости
   const profilePhoto =
-    user.user_photo && user.user_photo.trim() !== ""
+    user && user.user_photo && user.user_photo.trim() !== ""
       ? user.user_photo
       : "/profile-def.png";
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <div className='min-h-screen flex flex-col'>
       <div className='container mx-auto px-4 py-8'>
+        {error && (
+          <div className='mb-4 p-4 bg-red-100 text-red-700 rounded'>
+            {error}
+          </div>
+        )}
         <Card className='bg-[#FFF5EE] mb-8'>
           <CardContent className='p-6'>
             <div className='flex flex-col md:flex-row items-center gap-6'>
@@ -69,7 +109,7 @@ export default function Profile() {
                 {/* Если вы предпочитаете использовать компонент Image от Next.js:
                 <Image
                   src={profilePhoto}
-                  alt='Profile picture'
+                  alt="Profile picture"
                   layout="fill"
                   objectFit="cover"
                 /> */}
@@ -91,6 +131,7 @@ export default function Profile() {
               <Button
                 onClick={handleLogout}
                 className='bg-red-500 hover:bg-red-600 text-white flex items-center gap-2'
+                disabled={isLoading} // Отключаем кнопку при загрузке
               >
                 <LogOut className='h-5 w-5' />
                 Log out
@@ -100,33 +141,37 @@ export default function Profile() {
         </Card>
         <h2 className='text-2xl font-bold mb-6 mt-6'>Your appointments</h2>
         <div className='space-y-4'>
-          {appointments.map((appointment, index) => (
-            <Card key={index} className='bg-[#FFF5EE]'>
-              <CardContent className='p-6 flex justify-between items-center'>
-                <div className='flex items-center gap-4'>
-                  <div className='p-2 bg-white rounded-full'>
-                    <User className='h-6 w-6' />
+          {appointments.length > 0 ? (
+            appointments.map((appointment, index) => (
+              <Card key={index} className='bg-[#FFF5EE]'>
+                <CardContent className='p-6 flex justify-between items-center'>
+                  <div className='flex items-center gap-4'>
+                    <div className='p-2 bg-white rounded-full'>
+                      <User className='h-6 w-6' />
+                    </div>
+                    <div>
+                      <h3 className='font-semibold'>{appointment.title}</h3>
+                      <p className='text-gray-600'>{appointment.type}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className='font-semibold'>{appointment.title}</h3>
-                    <p className='text-gray-600'>{appointment.type}</p>
+                  <div className='text-right'>
+                    <p className='font-semibold'>
+                      {new Date(
+                        appointment.appointment_date
+                      ).toLocaleDateString()}
+                    </p>
+                    <p className='text-gray-600'>
+                      {new Date(
+                        appointment.appointment_date
+                      ).toLocaleTimeString()}
+                    </p>
                   </div>
-                </div>
-                <div className='text-right'>
-                  <p className='font-semibold'>
-                    {new Date(
-                      appointment.appointment_date
-                    ).toLocaleDateString()}
-                  </p>
-                  <p className='text-gray-600'>
-                    {new Date(
-                      appointment.appointment_date
-                    ).toLocaleTimeString()}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <p>No appointments found.</p>
+          )}
         </div>
       </div>
     </div>
